@@ -1,0 +1,22 @@
+{
+    "apps": [
+      {
+        "name": "tezos-backend",
+        "script": "server.js",
+        "cwd": "backend/interact-web",
+        "watch": true
+      },
+      {
+        "name": "tezos-blockchain",
+        "script": "server.ts",
+        "interpreter": "ts-node",
+        "cwd": "backend",
+        "watch": true
+      },
+      {
+        "name": "tezos-pdf",
+        "script": "server.js",
+        "cwd": "create-PDF"
+      }
+    ]
+}

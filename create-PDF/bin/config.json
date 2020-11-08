@@ -1,0 +1,14 @@
+{
+  "id": 5,
+  "user_id": 1,
+  "name": "Hien Le",
+  "identity": "17021278",
+  "email": "hien123@gmail.com",
+  "diploma_type": "Computer Science",
+  "credential_number": "UET7981",
+  "signature": "edsigtZ1RHgTHpuvoHpD6ipty5icPjRTgrnLinXsXWPYutqBRvzhVEnwVJXmJKRPW7DrPWjtLr1siAeJRqdNaRZNJaxaT8K86Sc",
+  "blockchain_hash": "KT1K6Z6CEoPGHcUecwESS6unWPHPms1WeYzG",
+  "is_broadcasted": 0,
+  "created_at": "2020-10-09 22:26:56",
+  "updated_at": "2020-10-14 08:56:41"
+}

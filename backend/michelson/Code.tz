@@ -1,0 +1,8 @@
+parameter unit;
+storage   (map string string);
+code
+  {
+    CDR;        # storage
+    NIL operation; # list operation.storage
+    PAIR;       # pair(_, storage)
+  } # pair(_, storage)
