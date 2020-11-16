@@ -19,16 +19,17 @@ class CertificateService {
     }
 
     static async getCredential() {
-        const base = 'UET'
-        let number = Math.floor(Math.random() * 8999 + 1000)
-        let credential = base.concat(number)
-        const result = await Certificate.findBy('credential_number', credential)
-        if(result) {
+        let result = null
+        let credential = null
+        do {
+            let base = 'UET'
+            let number = Math.floor(Math.random() * 8999 + 1000)
             credential = base.concat(number)
+            result = await Document.findBy('credential_number', credential)
         }
-        else {
-            return credential
-        }
+        while(result)
+        
+        return credential
     }
 
     static async getCertificateToString({ params }) {

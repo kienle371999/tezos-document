@@ -13,8 +13,8 @@ class CertificateController {
         }
         
         const { name, identity, email, type } = request.all()
-        const validation = validate({ name, identity, email, type }, rules)
-        if(!validation) {
+        const validation = await validate({ name, identity, email, type }, rules)
+        if(validation.fails()) {
             return response.badRequest(validation.messages())
         }
         
@@ -44,7 +44,7 @@ class CertificateController {
 
         const { email } = request.all()
         const validation = await validate({ email }, rules)
-        if(!validation) {
+        if(validation.fails()) {
             return response.badRequest(validation.messages())
         }
 
@@ -60,7 +60,7 @@ class CertificateController {
 
         const { email, signature } = request.all()
         const validation = await validate({ email, signature }, rules)
-        if(!validation) {
+        if(validation.fails()) {
             return response.badRequest(validation.messages())
         }
 
@@ -82,7 +82,7 @@ class CertificateController {
 
         const { email, blockchain_hash } = request.all()
         const validation = await validate({ email, blockchain_hash }, rules)
-        if(!validation) {
+        if(validation.fails()) {
             return response.badRequest(validation.messages())
         }
 
@@ -102,7 +102,7 @@ class CertificateController {
 
         const { credential_number } = request.all()
         const validation = await validate({ credential_number }, rules)
-        if(!validation) {
+        if(validation.fails()) {
             return response.badRequest(validation.messages())
         }
         const res = await Certificate.findBy('credential_number', credential_number)

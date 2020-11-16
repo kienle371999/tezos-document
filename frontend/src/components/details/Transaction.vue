@@ -5,21 +5,21 @@
       <table>
         <tr>
           <th>{{ "Name" }}</th>
-          <th>{{ "Student ID" }}</th>
-          <th>{{ "Email" }}</th>
-          <th>{{ "Diploma Type" }}</th>
+          <th>{{ "Identity Number" }}</th>
+          <th>{{ "Address" }}</th>
+          <th>{{ "Additional Information" }}</th>
           <th>{{ "Credential Number" }}</th>
           <th class="action">{{ "Action" }}</th>
         </tr>
-        <tr v-for="(certificate, index) in certificates" :key="index">
-          <td>{{ certificate.name }}</td>
-          <td>{{ certificate.identity }}</td>
-          <td>{{ certificate.email }}</td>
-          <td>{{ certificate.diploma_type }}</td>
-          <td>{{ certificate.credential_number }}</td>
+        <tr v-for="(doc, index) in documents" :key="index">
+          <td>{{ doc.name }}</td>
+          <td>{{ doc.identity_number }}</td>
+          <td>{{ doc.address }}</td>
+          <td>{{ JSON.parse(doc.additional_information) }}</td>
+          <td>{{ doc.credential_number }}</td>
           <td class="action">
             <button 
-            @click="showSignature(certificate.email, index)" 
+            @click="showSignature(doc.identity_number, index)" 
             :disabled="signDisabled[index]"
             :class="{ disable: signDisabled[index] }">{{ "Sign" }}</button>
             <button class="right-button" 
@@ -30,16 +30,15 @@
         </tr>
       </table>
     </div>
-    <signature-modal v-if="signModal" :email="email" @close-modal="close" @disable="disable"/>
+    <signature-modal v-if="signModal" :identityNumber="identityNumber" @close-modal="close" @disable="disable"/>
   </div>
 </template>
 
 <script>
 import Home from '@/components/roots/Home.vue'
 import ServerRequest from '@/requests/ServerRequest'
+//import BlockchainRequest from '@/requests/BlockchainRequest'
 import SignatureModal from '@/components/modals/SignatureModal.vue'
-import BlockchainRequest from '@/requests/BlockchainRequest'
-import PDFRequest from '@/requests/PDFRequest' 
 
 export default {
   components: {
@@ -48,45 +47,45 @@ export default {
   },
   data() {
     return {
-      certificates: [],
+      documents: [],
       signModal: false,
-      email: null,
+      identityNumber: null,
       index: 0,
       privateKey: null,
       signDisabled: [],
       broadcastDisabled: [],
-      currentCertificate: null
+      currentDocument: null
     }
   },
   created () {
-    ServerRequest.getCertificate().then(certificates => {
-      certificates.forEach(certificate => {
-        if(!certificate.is_broadcasted) {
-          this.certificates.push(certificate)
+    ServerRequest.getAllDocument().then(docs => {
+      docs.forEach(docs => {
+      console.log("created -> docs", docs)
+        if(!docs.is_broadcasted) {
+          this.documents.push(docs)
         }
       })
     })
   },
   methods: {
-    showSignature(email, index) {
+    showSignature(identityNumber, index) {
       this.signModal = true
-      this.email = email
+      this.identityNumber = identityNumber
       this.index = index
     },
-    close(key, currentCertificate) {
+    close(key, currentDocument) {
       this.privateKey = key
       this.signModal = false
-      this.currentCertificate = currentCertificate
+      this.currentDocument = currentDocument
     },
     disable() {
       this.$set(this.signDisabled, this.index, true)
     },
     async broadcast() {
-      const blockchainHash = await BlockchainRequest.broadcastCertificate({ privateKey: this.privateKey, certificate: this.currentCertificate })
-      await PDFRequest.createCertificatePDF({ data: this.currentCertificate })
-      await ServerRequest.sendCertificateByMail({ name: this.currentCertificate.name, email: "dongky6776@gmail.com" })
-      await ServerRequest.storeHash({ email: this.email, blockchain_hash: blockchainHash[0].receiver })
-      this.$set(this.broadcastDisabled, this.index, true)
+      const docType = await ServerRequest.getDocType(this.currentDocument.document_type_id)
+      console.log('-----------', Object.assign(this.currentDocument, { document_type: docType.document_type }))
+      // const blockchainHash = await BlockchainRequest.broadcastCertificate({ privateKey: this.privateKey, certificate: Object.assign(this.currentDocument, { document_type: documentType }) })
+      // await ServerRequest.storeHash({ email: this.email, blockchain_hash: blockchainHash[0].receiver })
       window.EventBus.$emit('SUCCESS', 'Success')
     }
   },

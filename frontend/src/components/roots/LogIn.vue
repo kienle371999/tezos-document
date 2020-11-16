@@ -62,7 +62,7 @@ export default {
     },
     disable() {
       setTimeout(() => {
-        this.getDisabled = window.EventBus.$data.disable
+        this.getDisablede = window.EventBus.$data.disable
       }, 2500);
     }
   },

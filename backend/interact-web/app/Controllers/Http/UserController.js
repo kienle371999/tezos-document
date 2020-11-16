@@ -12,11 +12,11 @@ class UserController {
         }
 
         const { email, password } = request.only(['email', 'password'])
-        const validation = validate({ email, password }, rules)
-        if(validation.fails) {
+        const validation = await validate({ email, password }, rules)
+        if(validation.fails()) {
             return response.badRequest(validation.messages())
         }
-        
+
         try {
             const user = await auth.attempt(email, password)
             return response.ok(user)

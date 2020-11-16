@@ -9,6 +9,8 @@ import Information from '@/components/details/Information.vue'
 import Transaction from '@/components/details/Transaction.vue'
 import Certificate from '@/components/details/Certificate.vue'
 import Authentication from '@/components/details/Authentication.vue'
+import CreateTemplate from '@/components/details/CreateTemplate.vue'
+import Template from '@/components/details/Template.vue'
 
 
 Vue.use(VueRouter)
@@ -76,6 +78,22 @@ const routes = [
     name: 'Authentication',
     component: Authentication
   },
+  {
+    path: '/create-template',
+    name: 'CreateTemplate',
+    component: CreateTemplate,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/template',
+    name: 'Template',
+    component: Template,
+    meta: {
+      requiresAuth: true
+    }
+  }
 ]
 
 const router = new VueRouter({

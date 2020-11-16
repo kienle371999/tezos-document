@@ -4,7 +4,7 @@
       <div class="modal-mask">
         <div class="modal-wrapper">
           <div class="modal-container">
-            <div class="modal-header">{{ "Sign Certificate" }}</div>
+            <div class="modal-header">{{ "Sign Document" }}</div>
             <div class="modal-body">
               <input type="text" v-model="key" class="key" placeholder="Private Key"/>
               <textarea name="signature" 
@@ -33,27 +33,27 @@ export default {
     return {
       key: null,
       signature: null,
-      currentCertificate: null
+      currentDocument: null
     }
   },
   props: {
-    email: {
+    identityNumber: {
       type: String,
       required: true
     }
   },
   methods: {
     async submit() {
-      const certificate = await ServerRequest.getCertificateToString({ email: this.email })
-      console.log("submit -> certificate", certificate)
-      const signature = await BlockchainRequest.signCertificate({ privateKey: this.key, data: JSON.stringify(certificate[0]) })
-      const currentCertificate = await ServerRequest.createSignature({ email: this.email, signature: signature })
-      this.currentCertificate = currentCertificate
+      console.log(this.identityNumber)
+      const document = await ServerRequest.getDocumentToString({ identityNumber: this.identityNumber })
+      const signature = await BlockchainRequest.signDocument({ privateKey: this.key, data: JSON.stringify(document[0]) })
+      const currentDocument = await ServerRequest.createSignature({ identityNumber: this.identityNumber, signature: signature })
+      this.currentDocument = currentDocument
       this.signature = signature
       window.EventBus.$emit('SUCCESS', 'Success')
     },
     close() {
-      this.$emit('close-modal', this.key, this.currentCertificate)
+      this.$emit('close-modal', this.key, this.currentDocument)
       this.$emit('disable')
     }
   },

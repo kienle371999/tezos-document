@@ -62,13 +62,14 @@ class TezosGateway {
         return accountDetail
     }
 
-    public async initContract(privateKey, certificate) {
-        console.log("TezosGateway -> initContract -> certificate", certificate)
+    public async initContract(privateKey, document) {
+        console.log("TezosGateway -> initContract -> document", document)
         
-        const storage = `{ Elt "Credential Number" "${certificate.credential_number}"; 
-        Elt "Diploma Type" "${certificate.diploma_type}"; 
-        Elt "Identity" "${certificate.identity}"; Elt "Name" "${certificate.name}"; 
-        Elt "Signature" "${certificate.signature}" }`
+        const storage = `{ Elt "Document Type" "${document.document_type}"
+        { Elt "Name" "${document.name}"; 
+        Elt "Identity Number" "${document.identity_number}"; 
+        Elt "Additional Information" "${document.additional_information}"; Elt "Credential Number" "${document.credential_number}"; 
+        Elt "Signature" "${document.signature}" }`
         
         console.log("TezosGateway -> initContract -> storage", storage)
         const contract = this.readFile()
@@ -84,8 +85,8 @@ class TezosGateway {
         return groupid
     }
 
-    public async getContractHash(privateKey, certificate) {
-        const groupid = await this.initContract(privateKey, certificate)
+    public async getContractHash(privateKey, document) {
+        const groupid = await this.initContract(privateKey, document)
         const url = RPCEnpoint.concat(groupid)
         console.log("TezosInteraction -> initContract -> url", url)
         

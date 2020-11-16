@@ -9,16 +9,16 @@ class BlockchainRequest extends BaseRequest {
         const url = this.getURL('/api/init-account')
         return this.get(url)
     }
-    async signCertificate(params) {
+    async signDocument(params) {
         const url = this.getURL('/api/sign-data')
         return this.post(url, params)
     }
-    async authenticateCertificate(params) {
+    async authenticateDocument(params) {
         const url = this.getURL('/api/authenticate-data')
         return this.post(url, params)
     }
     
-    async broadcastCertificate(params) {
+    async broadcastDocument(params) {
         const url = this.getURL('/api/broadcast-certificate')
         return this.post(url, params)
     }

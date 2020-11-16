@@ -3,12 +3,11 @@
     <home :activeInfo="true"/>
     <div class="info">
       <div class="form">
-        <h1>{{ "Information" }}</h1>
-        <form class="info-form">
-          <input type="text" v-model="name" placeholder="Name"/>
-          <input type="text" v-model="identity" placeholder="Student ID"/>
-          <input type="email" v-model="email" placeholder="Email"/>
-          <input type="text" v-model="type" placeholder="Diploma Type"/>
+        <h1>{{ document.document_type }}</h1>
+         <form class="info-form">
+          <div v-for="(attribute, index) in convertToArray(document.list_attribute)" :key="index">
+            <input type="text" v-model="documentParam[index]" :placeholder="attribute"/>
+          </div>
           <button type="button" @click="submit()" :disable="getDisabled">{{ "Submit" }}</button>
         </form>
       </div>
@@ -24,56 +23,38 @@ export default {
   components: {
     Home
   },
+  created () {
+    const template = localStorage.getItem('enableTemplate')
+    this.document = JSON.parse(template)
+  },
   data() {
     return {
-      name: null,
-      identity: null,
-      email: null,
-      type: null,
-      getDisabled: false,
+      document: null,
+      documentParam: [],
+      getDisabled: false
     }
   },
   methods: {
     async submit() {
-      if (!this.name) {
-        window.EventBus.$emit('ERROR', 'Empty name')
-        this.getDisabled = true
-        this.disable()
-        return
+      const listAttrribute = this.convertToArray(this.document.list_attribute)
+      for (const index in listAttrribute) {
+        if (!this.documentParam[index]) {
+          window.EventBus.$emit('ERROR', `Empty ${listAttrribute[index]}`)
+          this.getDisabled = true
+          this.disable()
+          return
+        }
       }
-      if (!this.identity) {
-        window.EventBus.$emit('ERROR', 'Empty Student ID')
-        this.getDisabled = true
-        this.disable()
-        return
-      }
-      if (!this.email) {
-        window.EventBus.$emit('ERROR', 'Empty email')
-        this.getDisabled = true
-        this.disable()
-        return
-      }
-      if (!this.type) {
-        window.EventBus.$emit('ERROR', 'Empty Diploma Type')
-        this.getDisabled = true
-        this.disable()
-        return
-      }
-      if (!this.validEmail(this.email)) {
-        window.EventBus.$emit('ERROR', 'Invalid email')
-        this.getDisabled = true
-        this.disable()
-        return
-      }
-
-      const result = await ServerRequest.generateCertificate({
-        name: this.name,
-        identity: this.identity,
-        email: this.email,
-        type: this.type
+      
+      const res = await ServerRequest.createDocument({
+        id: this.document.id,
+        name: this.documentParam[0],
+        identityNumber: this.documentParam[1],
+        address: this.documentParam[2],
+        additionalInfo: this.convertAddtionalInfo(3, listAttrribute)
       })
 
-      if(result) {
+      if(res) {
         window.EventBus.$emit('SUCCESS', 'Success')
         this.refresh()
       }
@@ -88,10 +69,25 @@ export default {
       }, 2500);
     },
     refresh() {
-      this.name = null
-      this.identity = null
-      this.email = null
-      this.type = null
+      this.documentParam = []
+    },
+    convertCamel(text) {
+      const newText = text.replace(/[A-Z]/g, item => item.toLowerCase()) 
+      const updatedText = newText.replace(' ','_')
+      
+      return updatedText
+    },
+    convertToArray(list) {
+      return JSON.parse(list)
+    },
+    convertAddtionalInfo(index, data) {
+      let parameter = {}
+      for (var i = index; i < data.length; i++) {
+        Object.assign(parameter, {
+         [this.convertCamel(data[i])]: this.documentParam[i]
+        })
+      }
+      return JSON.stringify(parameter)
     }
   },
 }
@@ -118,15 +114,15 @@ h1 {
     display: inline-block;
     z-index: 1;
     background: #FFFFFF;
-    max-width: 360px;
+    width: 360px;
     margin: 95px auto auto auto;
-    padding: 45px;
+    padding: 70px;
     text-align: center;
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
   }
   .form input {
     font-size: 15px;
-    color: #031532;
+    color: #000000;
     border-radius: 3px;
     padding: 12px 15px;
     margin-bottom: 10px;
