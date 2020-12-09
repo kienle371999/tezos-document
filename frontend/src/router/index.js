@@ -7,7 +7,7 @@ import ForgotPassword from '@/components/roots/ForgotPassword.vue'
 import Register from '@/components/roots/Register.vue'
 import Information from '@/components/details/Information.vue'
 import Transaction from '@/components/details/Transaction.vue'
-import Certificate from '@/components/details/Certificate.vue'
+import Document from '@/components/details/Document.vue'
 import Authentication from '@/components/details/Authentication.vue'
 import CreateTemplate from '@/components/details/CreateTemplate.vue'
 import Template from '@/components/details/Template.vue'
@@ -66,9 +66,9 @@ const routes = [
     }
   },
   {
-    path: '/certificate',
-    name: 'Certificate',
-    component: Certificate,
+    path: '/document',
+    name: 'Document',
+    component: Document,
     meta: {
       requiresAuth: true
     }

@@ -5,61 +5,61 @@
       <table>
         <tr>
           <th>{{ "Name" }}</th>
-          <th>{{ "Student ID" }}</th>
-          <th>{{ "Email" }}</th>
-          <th>{{ "Diploma Type" }}</th>
+          <th>{{ "Identity Number" }}</th>
+          <th>{{ "Address" }}</th>
+          <th>{{ "Additional Information" }}</th>
           <th>{{ "Credential Number" }}</th>
           <th class="action">{{ "Action" }}</th>
         </tr>
-        <tr v-for="(certificate, index) in certificates" :key="index">
-          <td>{{ certificate.name }}</td>
-          <td>{{ certificate.identity }}</td>
-          <td>{{ certificate.email }}</td>
-          <td>{{ certificate.diploma_type }}</td>
-          <td>{{ certificate.credential_number }}</td>
+        <tr v-for="(document, index) in documents" :key="index">
+          <td>{{ document.name }}</td>
+          <td>{{ document.identity_number }}</td>
+          <td>{{ document.address }}</td>
+          <td>{{ document.additional_information }}</td>
+          <td>{{ document.credential_number }}</td>
           <td class="action">
             <button @click="getDetail(index)">{{ "Detail" }}</button>
           </td>
         </tr>
       </table>
     </div>
-    <certificate-modal v-if="certificateModal" :contractAddress="address" @close-modal="close"/>
+    <document-modal v-if="documentModal" :contractAddress="address" @close-modal="close"/>
   </div>
 </template>
 
 <script>
 import Home from '@/components/roots/Home.vue' 
-import CertificateModal from '@/components/modals/CertificateModal.vue'
+import DocumentModal from '@/components/modals/DocumentModal.vue'
 import ServerRequest from '@/requests/ServerRequest'
 
 export default {
   components: {
     Home,
-    CertificateModal
+    DocumentModal
   },
   data() {
     return {
-      certificates: [],
-      certificateModal: false,
+      documents: [],
+      documentModal: false,
       address: null
     }
   },
 created () {
-    ServerRequest.getCertificate().then(certificates => {
-      certificates.forEach(certificate => {
-        if(certificate.is_broadcasted) {
-          this.certificates.push(certificate)
+    ServerRequest.getAllDocument().then(docs => {
+      docs.forEach(docs => {
+        if(docs.is_broadcasted) {
+          this.documents.push(docs)
         }
       })
     })
   },
   methods: {
     getDetail(index) {
-      this.address = this.certificates[index].blockchain_hash
-      this.certificateModal = true
+      this.address = this.documents[index].blockchain_hash
+      this.documentModal = true
     },
     close() {
-      this.certificateModal = false
+      this.documentModal = false
     }
   },
 }

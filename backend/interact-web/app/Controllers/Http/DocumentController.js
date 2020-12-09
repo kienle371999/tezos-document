@@ -85,7 +85,7 @@ class DocumentController {
 
     async storeBlockchainHash({ request, response }) {
         const rules = {
-            identityNumber: 'required|identityNumber',
+            identityNumber: 'required|string',
             blockchain_hash: 'required|string'
         }
 
@@ -111,6 +111,20 @@ class DocumentController {
 
         const res = await DocumentService.getDocType({ params: params })
         return response.ok(res)
+    }
+
+    async getDocumentByCredential({ request, response }) {
+        const rules = {
+            credential_number: 'required|string'
+        }
+        const { credential_number } = request.all()
+        const validation = await validate({ credential_number }, rules)
+        if(validation.fails()) {
+            return response.badRequest(validation.messages())
+        }
+
+        const res = DocumentService.getDocumentByCredential({ params: request.all() })
+        return res
     }
 }
 

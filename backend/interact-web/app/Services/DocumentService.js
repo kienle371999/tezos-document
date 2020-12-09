@@ -2,6 +2,7 @@
 const Document = use('App/Models/Document')
 const DocumentType = use('App/Models/DocumentType')
 const ErrorFactory = use('App/Common/ErrorFactory')
+const Database = use('Database')
 
 class DocumentService {
     static async createDocType({ params, auth }) {
@@ -121,6 +122,25 @@ class DocumentService {
         if(!res) {
             return ErrorFactory.notFound(`Document with ${id} is not found`)
         }
+
+        return res
+    }
+
+    static async getDocumentByCredential({ params }) {
+        const { credential_number } = params
+        const res = await Database.select(
+            'documents.name',
+            'documents.identity_number',
+            'documents.address',
+            'documents.additional_information',
+            'documents.credential_number',
+            'documents.blockchain_hash',
+            'documents.is_broadcasted',
+            'document_types.document_type'
+        )
+        .from('documents')
+        .leftJoin('document_types', 'document_types.id', 'documents.document_type_id')
+        .where('credential_number', credential_number)
 
         return res
     }

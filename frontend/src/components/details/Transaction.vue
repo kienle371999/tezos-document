@@ -37,7 +37,7 @@
 <script>
 import Home from '@/components/roots/Home.vue'
 import ServerRequest from '@/requests/ServerRequest'
-//import BlockchainRequest from '@/requests/BlockchainRequest'
+import BlockchainRequest from '@/requests/BlockchainRequest'
 import SignatureModal from '@/components/modals/SignatureModal.vue'
 
 export default {
@@ -60,7 +60,6 @@ export default {
   created () {
     ServerRequest.getAllDocument().then(docs => {
       docs.forEach(docs => {
-      console.log("created -> docs", docs)
         if(!docs.is_broadcasted) {
           this.documents.push(docs)
         }
@@ -83,14 +82,25 @@ export default {
     },
     async broadcast() {
       const docType = await ServerRequest.getDocType(this.currentDocument.document_type_id)
-      console.log('-----------', Object.assign(this.currentDocument, { document_type: docType.document_type }))
-      // const blockchainHash = await BlockchainRequest.broadcastCertificate({ privateKey: this.privateKey, certificate: Object.assign(this.currentDocument, { document_type: documentType }) })
-      // await ServerRequest.storeHash({ email: this.email, blockchain_hash: blockchainHash[0].receiver })
+      this.currentDocument.additional_information = this.parsingObject(JSON.parse(this.currentDocument.additional_information))
+      const blockchainHash = await BlockchainRequest.broadcastDocument({ privateKey: this.privateKey, document: Object.assign(this.currentDocument, { document_type: docType.document_type }) })
+      await ServerRequest.storeHash({ identityNumber: this.currentDocument.identity_number, blockchain_hash: blockchainHash.contractHash })
+      this.$set(this.broadcastDisabled, this.index, true)
       window.EventBus.$emit('SUCCESS', 'Success')
+    },
+    parsingObject(data) {
+      let res = ''
+      let index = 0
+      for (const [key, value] of Object.entries(data)) {
+        res = index < Object.keys(data).length - 1 ? res.concat(`${key}: ${value}, `) : res.concat(`${key}: ${value}`)
+        index += 1
+      }
+
+      return res
     }
   },
   mouted() {
-    this.broadcastDisabled[0] = true;
+    this.broadcastDisabled[0] = true
   },
 }
 </script>

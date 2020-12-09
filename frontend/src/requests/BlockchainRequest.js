@@ -19,7 +19,7 @@ class BlockchainRequest extends BaseRequest {
     }
     
     async broadcastDocument(params) {
-        const url = this.getURL('/api/broadcast-certificate')
+        const url = this.getURL('/api/broadcast-document')
         return this.post(url, params)
     }
 

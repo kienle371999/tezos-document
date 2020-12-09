@@ -7,16 +7,20 @@
             <div class="modal-header">{{ "Certificate Detail" }}</div>
             <div class="modal-body">
               <label>{{ "Name" }}</label>
-              <input type="text" :value="diploma.name" :disabled="true" class="name"/>
-              <label>{{ "Student ID" }}</label>
-              <input type="text" :value="diploma.identity" :disabled="true" class="student-id"/>
-              <label>{{ "Diploma Type" }}</label>
-              <input type="text" :value="diploma.diploma_type" :disabled="true" class="diploma-type"/>
+              <input type="text" :value="data.name" :disabled="true" class="name"/>
+              <label>{{ "Identity Number" }}</label>
+              <input type="text" :value="data.identity_number" :disabled="true" class="student-id"/>
+               <label>{{ "Address" }}</label>
+              <input type="text" :value="data.address" :disabled="true" class="address"/>
+               <label>{{ "Additional Information" }}</label>
+              <input type="text" :value="data.additional_information" :disabled="true" class="student-id"/>
+              <label>{{ "Document Type" }}</label>
+              <input type="text" :value="data.document_type" :disabled="true" class="document-type"/>
               <label>{{ "Signature" }}</label>
-              <textarea type="text" rows="3" :value="diploma.signature" :disabled="true" class="signature"/>
+              <textarea type="text" rows="3" :value="data.signature" :disabled="true" class="signature"/>
               <label>{{ "Contract Hash" }}</label>
               <a :href="blockchainDirectory" target="_blank">
-              <input type="text" :value="diploma.blockchain_hash" :disabled="true" class="contract-hash"/>
+              <input type="text" :value="data.blockchain_hash" :disabled="true" class="contract-hash"/>
               </a>
             </div> 
             <div class="modal-footer">
@@ -36,7 +40,7 @@ import BlockchainRequest from '@/requests/BlockchainRequest'
 export default {
   data() {
     return {
-      diploma: {},
+      data: {},
       blockchainDirectory: null,
       authenSign: false,
       dataReady: false
@@ -47,23 +51,25 @@ export default {
       type: String,
       required: true
     },
-    certificate: {
+    document: {
       type: Array,
       required: true
     },
   },
   async created() {
-    const certificate = this.certificate
-    const serverRes = await BlockchainRequest.getContractDetail({ contractAddress: certificate[0].blockchain_hash })
-    Object.assign(this.diploma, certificate[0], { 'signature': serverRes['value']['0@map']['Signature'] })
+    const document = this.document
+    console.log("created -> document", document)
+    const serverRes = await BlockchainRequest.getContractDetail({ contractAddress: document[0].blockchain_hash })
+    console.log("created -> serverRes", serverRes)
+    Object.assign(this.data, document[0], { 'signature': serverRes['value']['0@map']['Signature'] })
     const baseURL = process.env.VUE_APP_TEZOS_URL
-    const url = baseURL.concat(certificate[0].blockchain_hash)
+    const url = baseURL.concat(document[0].blockchain_hash)
     this.blockchainDirectory = url
     this.dataReady = true
   },
   methods: {
     submit() {
-      this.$emit('change-modal', this.diploma.signature, this.diploma.email)
+      this.$emit('change-modal', this.data.signature, this.data.identity_number)
     },
     close() {
       this.$emit('close-modal')
@@ -120,7 +126,7 @@ export default {
   color: #000000;
   border-radius: 3px;
   padding: 12px 15px;
-  margin-left: 115px;
+  margin-left: 160px;
   margin-bottom: 10px;
   background-color: #f3f4f5;
   border: solid 1px rgba(3,21,50,0.13);
@@ -135,7 +141,7 @@ export default {
   color: #000000;
   border-radius: 3px;
   padding: 12px 15px;
-  margin-left: 115px;
+  margin-left: 160px;
   margin-bottom: 10px;
   background-color: #f3f4f5;
   border: solid 1px rgba(3,21,50,0.13);
@@ -174,7 +180,7 @@ export default {
   color: #FFFFFF;
   font-size: 15px;
   border-radius: 3px;
-  margin-right: 88px;
+  margin-right: 50px;
   cursor: pointer; 
   margin-left: 5px;
 }

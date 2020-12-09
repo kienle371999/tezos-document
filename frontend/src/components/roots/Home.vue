@@ -10,7 +10,7 @@
         <li :class="{ background: activeTemplate }"><a href="/template">{{ "Template" }}</a></li>
         <li :class="{ background: activeInfo }"><a href="/information">{{ "Information" }}</a></li>
         <li :class="{ background: activeTransaction }"><a href="/transaction">{{ "Transaction" }}</a></li>
-        <li :class="{ background: activeCertificate }"><a href="/certificate">{{ "Document" }}</a></li>
+        <li :class="{ background: activeCertificate }"><a href="/document">{{ "Document" }}</a></li>
         <li :class="{ background: activeAuthen }"><a href="/authentication">{{ "Authentication" }}</a></li>
         <li><a @click="submit()">{{ "Log out" }}</a></li>
       </ul>

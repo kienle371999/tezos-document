@@ -33,7 +33,7 @@ import BlockchainRequest from '@/requests/BlockchainRequest'
 export default {
   data() {
     return {
-      network: 'Carthagenet',
+      network: 'Delphinet',
       contractDetail: null,
       blockchainDirectory: null,
       dataReady: false

@@ -39,17 +39,17 @@ export default {
       type: String,
       required: true
     },
-    email: {
+    identityNumber: {
       type: String,
       required: true
     }
   },
   methods: {
     async submit() {
-      const certificate = await ServerRequest.getCertificateToString({ email: this.email })
-      const authenCertificate = await BlockchainRequest.authenticateCertificate({
+      const document = await ServerRequest.getDocumentToString({ identityNumber: this.identityNumber })
+      const authenCertificate = await BlockchainRequest.authenticateDocument({
         signature: this.signature,
-        data: JSON.stringify(certificate[0]),
+        data: JSON.stringify(document[0]),
         publicKey: this.key
       })
 

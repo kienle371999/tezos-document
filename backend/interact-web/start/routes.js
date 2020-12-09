@@ -29,7 +29,7 @@ Route.group(() => {
 //GET
 Route.group(() => {
 Route.get('user/get-document-string', 'DocumentController.getDocumentToString').middleware(['auth'])
-Route.get('user/get-certificate-credential', 'DocumentController.getCertificateByCredential').middleware(['auth'])
+Route.get('user/get-document-credential', 'DocumentController.getDocumentByCredential').middleware(['auth'])
 Route.get('user/get-all-document-type', 'DocumentController.getAllDocType').middleware(['auth'])
 Route.get('user/get-document-type/:id', 'DocumentController.getDocType').middleware(['auth'])
 Route.get('user/get-all-document', 'DocumentController.getAllDocument').middleware(['auth'])

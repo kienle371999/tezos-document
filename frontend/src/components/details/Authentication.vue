@@ -10,12 +10,12 @@
     </div>
     <authentication-modal v-if="authenModal" 
     :credentialNumber="credential_number" 
-    :certificate="certificate"
+    :document="document"
     @change-modal="change"
     @close-modal="close"/>
     <authen-signature-modal v-if="authenSign" 
     :signature="signature" 
-    :email="email"
+    :identityNumber="identityNumber"
     @close-sign-modal="closeSign"/>
   </div>
 </template>
@@ -35,7 +35,7 @@
         authenSign: false,
         signature: null,
         email: null,
-        certificate: null
+        document: null
       }
     },
     components: {
@@ -45,21 +45,21 @@
     },
     methods: {
       async submit() {
-        const certificate = await ServerRequest.getCertificateByCredential({ credential_number: this.credential_number }) 
-        if(!certificate.length) {
-          window.EventBus.$emit('ERROR', 'Invalid Credential Number')
+        const document = await ServerRequest.getDocumentByCredential({ credential_number: this.credential_number }) 
+        if(!document.length) {
+          window.EventBus.$emit('ERROR', 'Invalid Document Number')
         }
-        else if(!certificate[0].is_broadcasted) {
-          window.EventBus.$emit('ERROR', 'Invalid Credential Number')
+        else if(!document[0].is_broadcasted) {
+          window.EventBus.$emit('ERROR', 'Invalid Document Number')
         }
         else {
           this.authenModal = true
-          this.certificate = certificate
+          this.document = document
         }
       },
-      change(signature, email) {
+      change(signature, identityNumber) {
         this.signature = signature
-        this.email = email
+        this.identityNumber = identityNumber
         this.authenModal = false
         this.authenSign = true
       },

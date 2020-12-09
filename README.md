@@ -1,1 +1,1 @@
-## tezos-certificate
+## tezos-document
